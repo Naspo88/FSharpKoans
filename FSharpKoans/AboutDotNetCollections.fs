@@ -19,8 +19,8 @@ module ``about dot net collections`` =
         fruits.Add("apple")
         fruits.Add("pear")
  
-        AssertEquality fruits.[0] __
-        AssertEquality fruits.[1] __
+        AssertEquality fruits.[0] "apple"
+        AssertEquality fruits.[1] "pear"
 
     [<Koan>]
     let CreatingDotNetDictionaries() =
