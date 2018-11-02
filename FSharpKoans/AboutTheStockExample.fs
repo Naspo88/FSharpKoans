@@ -60,6 +60,32 @@ module ``about the stock example`` =
 
     [<Koan>]
     let YouGotTheAnswerCorrect() =
-        let result =  __
+        let getDifferenceOpenClose stock =
+            let mutable maxDiff = 0.0;
+            let mutable date = "";
+            let splitCommas (x:string) =
+                x.Split([|','|]);
+
+            let getDateAndDifference (arr:string[]) =
+                let diff = System.Double.Parse(arr.[4]) - System.Double.Parse(arr.[1]);
+                ( arr.[0], diff );
+
+            let getDateForMax tupla =
+                if snd tupla > maxDiff then
+                    maxDiff <- snd tupla;
+                    date <- fst tupla;
+ 
+            let arrays = 
+                stock
+                |> Seq.skip 1
+                |> Seq.map splitCommas
+                |> Seq.map getDateAndDifference
+            
+            for tupla in arrays do
+                getDateForMax tupla
+
+            date
+                
+        let result = getDifferenceOpenClose stockData;
         
         AssertEquality "2012-03-13" result
