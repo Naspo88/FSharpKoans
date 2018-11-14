@@ -60,32 +60,42 @@ module ``about the stock example`` =
 
     [<Koan>]
     let YouGotTheAnswerCorrect() =
-        let getDifferenceOpenClose stock =
-            let mutable maxDiff = 0.0;
-            let mutable date = "";
-            let splitCommas (x:string) =
-                x.Split([|','|]);
+        let splitCommas (x:string) =
+            x.Split([|','|])
 
-            let getDateAndDifference (arr:string[]) =
-                let diff = System.Double.Parse(arr.[4]) - System.Double.Parse(arr.[1]);
-                ( arr.[0], diff );
+        let getDate row = Array.item 0 row
+        let getOpen row = Array.item 1 row
+        let getClose row = Array.item 4 row
 
-            let getDateForMax tupla =
-                if snd tupla > maxDiff then
-                    maxDiff <- snd tupla;
-                    date <- fst tupla;
+        let getDateAndDifference (arr:string[]) =
+            let diff = System.Double.Parse(getClose arr) - System.Double.Parse(getOpen arr)
+            ( getDate arr, abs diff );
+
+        let getDifferenceOpenClose rows =
+            rows
+            |> Seq.skip 1
+            |> Seq.map (splitCommas >> getDateAndDifference)
+            |> Seq.maxBy snd
+            |> fst
+
+
+
+            //let getDateForMax tupla =
+            //    if snd tupla > maxDiff then
+            //        maxDiff <- snd tupla;
+            //        date <- fst tupla;
  
-            let arrays = 
-                stock
-                |> Seq.skip 1
-                |> Seq.map splitCommas
-                |> Seq.map getDateAndDifference
+            //let arrays = 
+            //    stock
+            //    |> Seq.skip 1
+            //    |> Seq.map splitCommas
+            //    |> Seq.map getDateAndDifference
             
-            for tupla in arrays do
-                getDateForMax tupla
+            //for tupla in arrays do
+            //    getDateForMax tupla
 
-            date
+            //date
                 
-        let result = getDifferenceOpenClose stockData;
+        let result = getDifferenceOpenClose stockData
         
         AssertEquality "2012-03-13" result
